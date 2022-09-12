@@ -4,6 +4,7 @@ from instagrapi import Client
 from pwinput import pwinput
 from tempfile import gettempdir
 from datetime import datetime
+from pathlib import Path
 
 # Get user information
 username = input("Username: ").strip()
@@ -13,7 +14,7 @@ print()
 
 # Account settings dump path
 DUMP = os.path.join(gettempdir(), "{}_account_dump.json".format(username))
-BACKUP = os.path.join(gettempdir(), "{}_follower_dump.instabackup".format(username))
+BACKUP = os.path.join(str(Path.home()), "{}_follower_dump.instabackup".format(username))
 
 # Try to login and get account details, if fails, terminate
 try:
