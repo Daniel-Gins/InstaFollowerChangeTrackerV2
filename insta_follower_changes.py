@@ -55,7 +55,10 @@ except Exception as e:
     sys.exit(1)
 
 # Extract only the usernames on both followed accounts and followers
-followers_usernames = [i.username for i in followers.values()]
+followers_dict = {}
+
+for i in followers.values():
+    followers_dict[i.pk] = i.username
 
 # If there is no backup, create the backup and terminate
 if not os.path.exists(BACKUP):
@@ -63,7 +66,7 @@ if not os.path.exists(BACKUP):
 
     # Create the backup file
     with open(BACKUP, "w") as file:
-        file.write(str(datetime.now()) + "\n" + "\n".join(followers_usernames))
+        file.write(str(datetime.now()) + "\n" + "\n".join([";".join(i) for i in followers_dict.items()]))
     
     # Terminate
     input("Press Enter to terminate.")
@@ -74,7 +77,10 @@ print("Getting backup...")
 with open(BACKUP, "r") as file:
     lines = file.readlines()
 timestamp = lines.pop(0).strip()
-old_backup = [i.strip() for i in lines]
+old_backup = {}
+for i in lines:
+    item = i.strip().split(";")
+    old_backup[item[0]] = item[1]
 
 print("Latest backup timestamp: " + timestamp) # Print the backup timestamp
 
@@ -83,14 +89,14 @@ new_followers = []
 unfollowed = []
 
 # Get new followers
-for i in followers_usernames:
-    if i not in old_backup:
-        new_followers.append(i)
+for i in followers_dict.items():
+    if i[0] not in old_backup.keys():
+        new_followers.append(i[1])
 
 # Get users who have unfollowed
-for i in old_backup:
-    if i not in followers_usernames:
-        unfollowed.append(i)
+for i in old_backup.items():
+    if i[0] not in followers_dict.keys():
+        unfollowed.append(i[1])
 
 print()
 # If there are no changes, terminate
@@ -131,7 +137,7 @@ with open(path, "w") as file:
 
 # Backup again
 with open(BACKUP, "w") as file:
-    file.write(str(datetime.now()) + "\n" + "\n".join(followers_usernames))
+    file.write(str(datetime.now()) + "\n" + "\n".join([";".join(i) for i in followers_dict.items()]))
 
 # Print the path and terminate
 print("\nResults are saved to {}.".format(path))
