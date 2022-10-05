@@ -37,11 +37,12 @@ try:
     # Get the user ID
     user_id = cl.user_id
     print("Your User ID: {}".format(user_id))
+    
 
     # Get following
     print("Getting accounts that you follow...")
     following = cl.user_following(user_id)
-    print("Got {} followers.".format(len(following)))
+    print("You are following {} accounts.".format(len(following)))
 except Exception as e:
     # Print the exception message
     print("An exception occured: {}".format(str(e)))
@@ -54,6 +55,13 @@ except Exception as e:
     # Terminate
     input("Press Enter to terminate.")
     sys.exit(1)
+# Get the path for results
+path = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop', "{}_follower_changes.html".format(username))
+path1 = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop', "{}_following_all.html".format(username))
+
+# Print the new following and fill an HTML body with them and their Instagram profiles
+
+html = "<b>Timestamp:</b> {}<br><br>".format(str(datetime.now()))
 
 # Extract only the usernames on both followed accounts and followers
 following_dict = {}
@@ -64,11 +72,16 @@ for i in following.values():
 # If there is no backup, create the backup and terminate
 if not os.path.exists(BACKUP):
     print("Backup not found. Creating a new backup...")
-
+    print("Saving Following list to {}".format(path1))
+    html += "<b>following:</b><br>"
+    for i in following_dict.values():
+        html += '<a href="https://instagram.com/{}">{}</a><br><br>'.format(i, i)
+    with open(path1, "w") as file:
+        file.write(html)
     # Create the backup file
     with open(BACKUP, "w") as file:
         file.write(str(datetime.now()) + "\n" + "\n".join([";".join(i) for i in following_dict.items()]))
-    
+        
     # Terminate
     input("Press Enter to terminate.")
     sys.exit(0)
@@ -89,7 +102,7 @@ print("Latest backup timestamp: " + timestamp) # Print the backup timestamp
 new_following = []
 unfollowed = []
 
-# Get new followering
+# Get new following
 for i in following_dict.items():
     if i[0] not in old_backup.keys():
         new_following.append(i[1])
@@ -100,25 +113,25 @@ for i in old_backup.items():
         unfollowed.append(i[1])
 
 print()
+
 # If there are no changes, terminate
 if len(new_following) == 0 and len(unfollowed) == 0:
-    print("No new changes on followers. Nothing is saved.")
+    print("No new changes on followers.")
+    print("following List saved to {}".format(path1))
     input("Press Enter to terminate.")
+    html += "<b>following:</b><br>"
+    for i in following_dict.values():
+        html += '<a href="https://instagram.com/{}">{}</a><br>'.format(i, i)
+    with open(path1, "w") as file:
+        file.write(html)
     sys.exit(0)
 
-# Get the path for results
-path = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop', "{}_follower_changes.html".format(username))
-
-# Print the new following and fill an HTML body with them and their Instagram profiles
-html = "<b>Timestamp:</b> {}<br><br>".format(str(datetime.now()))
 if len(new_following) != 0:
-    print("New followers:")
+    print("New follows:")
     print("\n".join(new_following))
-
-    html += "<b>New followers:</b><br>"
+    html += "<b>New follows:</b><br>"
     for i in new_following:
         html += '<a href="https://instagram.com/{}">{}</a><br>'.format(i, i)
-
     if len(unfollowed) != 0:
         print()
         html += "<br>"
@@ -133,7 +146,9 @@ if len(unfollowed) != 0:
         html += '<a href="https://instagram.com/{}">{}</a><br>'.format(i, i)
 
 # Open the file and write the results into it
-with open(path, "w") as file:
+with open(path, "a") as file:
+    file.write(html)
+with open(path1, "a") as file:
     file.write(html)
 
 # Backup again
