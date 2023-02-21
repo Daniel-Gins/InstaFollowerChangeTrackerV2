@@ -9,3 +9,5 @@ dumps
 accounts/
 dumps/
 __pycache__
+.vscode
+.env
