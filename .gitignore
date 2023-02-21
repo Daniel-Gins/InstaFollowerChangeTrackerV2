@@ -6,5 +6,6 @@ venv/
 .venv/
 accounts
 dumps
-accounts
+accounts/
+dumps/
 __pycache__
