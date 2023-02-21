@@ -25,9 +25,9 @@ class following_main:
         [print(i) for i in os.listdir(gettempdir()) if i.endswith("_account_dump.json")]
         print("\n-----","\nPlease enter the username of the account you would like to use: ")
         login_dict = {
-                        "throwpiway": os.getenv("THROWPIWAY"),
-                        "brittjamsmith51": os.getenv("BRITTJAMSMITH51"),
-                        "bob_duffin": os.getenv("BOB_DUFFIN"),
+                        os.getenv("TRH1U"): os.getenv("TRH1"),
+                        os.getenv("BRITTJAMSU"): os.getenv("BRITTJAMS"),
+                        os.getenv("BOBU"): os.getenv("BOB"),
                     }                                              
         username = input("Username: ").strip().lower()
         if username in login_dict.keys():
@@ -50,11 +50,11 @@ class following_main:
                 # Create the client
         cl = Client()
 
-        if username == "throwpiway":
+        if username == os.getenv("TRH1U"):
             cl.set_proxy(os.getenv("PROXYZ1"))
-        elif username == "brittjamsmith51":
+        elif username == os.getenv("BRITTJAMSU"):
             cl.set_proxy(os.getenv("PROXYINS"))
-        elif username == "bob_duffin":
+        elif username == (os.getenv("BOBU")):
             cl.set_proxy(os.getenv("PROXYDIND"))
         else:
             cl.set_proxy(os.getenv("PROXYZ1"))
