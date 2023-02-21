@@ -1,3 +1,6 @@
-instagrapi==1.16.20
+instagrapi==1.16.41
 pwinput==1.0.2
-pillow==9.2.0
+pillow==9.4.0
+openpyxl==3.1.1
+discord
+dotenv
